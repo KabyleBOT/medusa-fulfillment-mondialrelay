@@ -16,7 +16,7 @@ import MondialRelayClient from "../utils/mondial-relay-client";
 import {
 	FulfillmentProviderData,
 	MondialRelayOptions,
-} from "../types/mondial-relay";
+} from "../types";
 
 export interface InjectedDependencies
 	extends MedusaContainer {
@@ -162,32 +162,54 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					parcelCount: 1,
 					deliveryMode: {
 						mode: "24R",
-						location: "FR-14369",
+						location:
+							order?.shipping_address
+								?.address_2,
 					},
 					collectionMode: {
-						mode: "CCC",
-						location: "",
+						mode: "REL",
+						location:
+							businessAddress?.address_2,
 					},
 					parcels: parcels,
 					deliveryInstruction: "",
 					sender: {
+						title: "",
+						firstName: "",
+						lastName: "",
 						streetname:
-							businessAddress?.address_1,
-						addressAdd2:
-							businessAddress?.address_2,
+							businessAddress?.address_1 ??
+							"",
 						countryCode:
-							businessAddress?.country_code,
+							businessAddress?.country_code ??
+							"",
 						postCode:
-							businessAddress?.postal_code,
-						city: businessAddress?.city,
+							businessAddress?.postal_code ??
+							"",
+						city:
+							businessAddress?.city ??
+							"",
 						addressAdd1:
-							businessAddress?.company,
+							businessAddress?.company ??
+							"",
+						addressAdd2:
+							businessAddress?.address_2 ??
+							"",
 						mobileNo:
-							this.client.businessPhone,
+							this.client
+								.businessPhone ?? "",
 						email:
-							this.client.businessEmail,
+							this.client
+								.businessEmail ?? "",
 					},
 					recipient: {
+						title: "",
+						firstName:
+							order?.shipping_address
+								?.first_name,
+						lastName:
+							order?.shipping_address
+								?.last_name,
 						streetname:
 							order?.shipping_address
 								?.address_1,
@@ -286,15 +308,24 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					parcelCount: 1,
 					deliveryMode: {
 						mode: "24R",
-						location: "FR-14369",
+						location:
+							businessAddress?.address_2,
 					},
 					collectionMode: {
-						mode: "CCC",
-						location: "",
+						mode: "REL",
+						location:
+							businessAddress?.address_2,
 					},
 					parcels: parcels,
 					deliveryInstruction: "",
 					sender: {
+						title: "",
+						firstName:
+							order?.shipping_address
+								?.first_name,
+						lastName:
+							order?.shipping_address
+								?.last_name,
 						streetname:
 							order?.shipping_address
 								?.address_1,
@@ -316,6 +347,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						email: order?.email,
 					},
 					recipient: {
+						title: "",
+						firstName: "",
+						lastName: "",
 						streetname:
 							businessAddress?.address_1,
 						addressAdd2:

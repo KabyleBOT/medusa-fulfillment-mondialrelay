@@ -7,13 +7,16 @@ export interface Context {
 }
 
 export interface Address {
+	title: string;
+	firstName: string;
+	lastName: string;
 	streetname: string;
-	addressAdd2?: string;
+	addressAdd2: string;
 	countryCode: string;
 	postCode: string;
 	city: string;
-	addressAdd1?: string;
-	mobileNo?: string;
+	addressAdd1: string;
+	mobileNo: string;
 	email: string;
 }
 

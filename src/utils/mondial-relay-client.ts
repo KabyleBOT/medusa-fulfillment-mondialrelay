@@ -6,7 +6,7 @@ import {
 	MondialRelayOptions,
 	Parcel,
 	ShipmentCreationRequest,
-} from "../types/mondial-relay";
+} from "../types";
 
 class MondialRelayClient {
 	apiBaseUrl: string;
@@ -153,11 +153,18 @@ class MondialRelayClient {
 			address: Address
 		) => `
       <Address>
+	  <Title>${address?.title ?? ""}</Title>
+		<FirstName>${
+			address?.firstName ?? ""
+		}</FirstName>
+		<LastName>${
+			address?.lastName ?? ""
+		}</LastName>
         <Streetname>${
 					address.streetname
 				}</Streetname>
         <AddressAdd2>${
-					address.addressAdd2 || ""
+					address?.addressAdd2
 				}</AddressAdd2>
         <CountryCode>${address.countryCode.toUpperCase()}</CountryCode>
         <PostCode>${

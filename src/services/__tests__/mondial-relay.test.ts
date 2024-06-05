@@ -8,7 +8,7 @@ import {
 	Logger,
 } from "@medusajs/medusa";
 import dotenv from "dotenv";
-import { MondialRelayOptions } from "../../types/mondial-relay";
+import { MondialRelayOptions } from "../../types";
 import { IStockLocationService } from "@medusajs/types";
 
 // Load environment variables from .env file
@@ -32,10 +32,10 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 								address: {
 									address_1:
 										"Test Street",
-									address_2: "10",
-									city: "Paris",
+									address_2: "FR-02071",
+									city: "Créteil",
 									country_code: "FR",
-									postal_code: "75001",
+									postal_code: "94000",
 								} as any,
 							}) as any as IStockLocationService,
 					} as any as IStockLocationService,
@@ -54,7 +54,7 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 				first_name: "John",
 				last_name: "Doe",
 				address_1: "Test Street",
-				address_2: "10",
+				address_2: "FR-21607",
 				country_code: "FR",
 				postal_code: "75001",
 				city: "Paris",
