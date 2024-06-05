@@ -1,5 +1,5 @@
 {
-	"name": "@ghilas/medusa-fulfillment-mondialrelay",
+	"name": "medusa-fulfillment-mondialrelay",
 	"version": "0.0.1",
 	"description": "A mondial relay integration for Medusajs",
 	"author": "khaled Belkouche <khaled.belkouche@assalas.com>",
