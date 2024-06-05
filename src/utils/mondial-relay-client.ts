@@ -260,14 +260,21 @@ class MondialRelayClient {
 	async createShipment(
 		data: ShipmentCreationRequest
 	): Promise<any> {
-		const result =
-			await this.speekToMondialRelay(
-				data
+		try {
+			const result =
+				await this.speekToMondialRelay(
+					data
+				);
+			this.logger.info(
+				`Mondial Relay Shipment created with number: ${result.shipment_number}`
 			);
-		this.logger.info(
-			`Shipment created with number: ${result.shipment_number}`
-		);
-		return result;
+			return result;
+		} catch (error) {
+			this.logger.error(
+				`Failed to create Mondial Relay shipment: ${error.message}`
+			);
+			throw error;
+		}
 	}
 }
 
