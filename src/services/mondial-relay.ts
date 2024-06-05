@@ -117,24 +117,21 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	): Promise<FulfillmentProviderData> {
 		const locationId =
 			fulfillment.location_id;
-		const stockLocation =
+		const { address: businessAddress } =
 			await this.retrieveStockLocation(
 				locationId
 			);
-
-		const { address: businessAddress } =
-			stockLocation;
 
 		const parcels = [
 			{
 				content: fulfillment.id,
 				weight: {
-					value: order.items.reduce(
+					value: order?.items?.reduce(
 						(acc, item) =>
 							acc +
-							item.quantity *
-								(item.variant.weight ??
-									500),
+							item?.quantity *
+								(item?.variant
+									?.weight ?? 500),
 						0
 					),
 					unit: "gr",
@@ -159,8 +156,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			shipmentsList: [
 				{
 					orderNo:
-						order.display_id.toString(),
-					customerNo: order.customer_id,
+						order?.display_id?.toString(),
+					customerNo:
+						order?.customer_id,
 					parcelCount: 1,
 					deliveryMode: {
 						mode: "24R",
@@ -174,16 +172,16 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					deliveryInstruction: "",
 					sender: {
 						streetname:
-							businessAddress.address_1,
+							businessAddress?.address_1,
 						addressAdd2:
-							businessAddress.address_2,
+							businessAddress?.address_2,
 						countryCode:
-							businessAddress.country_code,
+							businessAddress?.country_code,
 						postCode:
-							businessAddress.postal_code,
-						city: businessAddress.city,
+							businessAddress?.postal_code,
+						city: businessAddress?.city,
 						addressAdd1:
-							businessAddress.company,
+							businessAddress?.company,
 						mobileNo:
 							this.client.businessPhone,
 						email:
@@ -191,24 +189,24 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					},
 					recipient: {
 						streetname:
-							order.shipping_address
-								.address_1,
+							order?.shipping_address
+								?.address_1,
 						addressAdd2:
-							order.shipping_address
-								.address_2,
+							order?.shipping_address
+								?.address_2,
 						countryCode:
-							order.shipping_address
-								.country_code,
+							order?.shipping_address
+								?.country_code,
 						postCode:
-							order.shipping_address
-								.postal_code,
+							order?.shipping_address
+								?.postal_code,
 						city: order
 							?.shipping_address.city,
 						addressAdd1: "",
 						mobileNo:
-							order.shipping_address
-								.phone,
-						email: order.email,
+							order?.shipping_address
+								?.phone,
+						email: order?.email,
 					},
 				},
 			],
@@ -226,7 +224,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		try {
 			order =
 				await this.orderService_.retrieve(
-					returnOrder.order_id,
+					returnOrder?.order_id,
 					{
 						relations: [
 							"shipping_address",
@@ -235,32 +233,29 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 				);
 		} catch (error) {
 			throw new Error(
-				`Order with id ${returnOrder.order_id} not found`
+				`Order with id ${returnOrder?.order_id} not found`
 			);
 		}
 
 		const providerId =
-			returnOrder.location_id;
+			returnOrder?.location_id;
 
-		const stockLocation =
+		const { address: businessAddress } =
 			await this.retrieveStockLocation(
 				providerId
 			);
 
-		const { address: businessAddress } =
-			stockLocation;
-
 		const parcels = [
 			{
-				content: returnOrder.id,
+				content: returnOrder?.id,
 				weight: {
 					value:
-						returnOrder.items.reduce(
+						returnOrder?.items?.reduce(
 							(acc, item) =>
 								acc +
-								item.quantity *
-									(item.item.variant
-										.weight ?? 500),
+								item?.quantity *
+									(item?.item?.variant
+										?.weight ?? 500),
 							0
 						),
 					unit: "gr",
@@ -285,8 +280,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			shipmentsList: [
 				{
 					orderNo:
-						order.display_id.toString(),
-					customerNo: order.customer_id,
+						order?.display_id?.toString(),
+					customerNo:
+						order?.customer_id,
 					parcelCount: 1,
 					deliveryMode: {
 						mode: "24R",
@@ -300,37 +296,37 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					deliveryInstruction: "",
 					sender: {
 						streetname:
-							order.shipping_address
-								.address_1,
+							order?.shipping_address
+								?.address_1,
 						addressAdd2:
-							order.shipping_address
-								.address_2,
+							order?.shipping_address
+								?.address_2,
 						countryCode:
-							order.shipping_address
-								.country_code,
+							order?.shipping_address
+								?.country_code,
 						postCode:
-							order.shipping_address
-								.postal_code,
+							order?.shipping_address
+								?.postal_code,
 						city: order
 							?.shipping_address.city,
 						addressAdd1: "",
 						mobileNo:
-							order.shipping_address
-								.phone,
-						email: order.email,
+							order?.shipping_address
+								?.phone,
+						email: order?.email,
 					},
 					recipient: {
 						streetname:
-							businessAddress.address_1,
+							businessAddress?.address_1,
 						addressAdd2:
-							businessAddress.address_2,
+							businessAddress?.address_2,
 						countryCode:
-							businessAddress.country_code,
+							businessAddress?.country_code,
 						postCode:
-							businessAddress.postal_code,
-						city: businessAddress.city,
+							businessAddress?.postal_code,
+						city: businessAddress?.city,
 						addressAdd1:
-							businessAddress.company,
+							businessAddress?.company,
 						mobileNo:
 							this.client.businessPhone,
 						email:

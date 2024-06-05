@@ -49,6 +49,7 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 			id: "order_123",
 			customer_id: "customer_123",
 			email: "john.doe@example.com",
+			display_id: 123,
 			shipping_address: {
 				first_name: "John",
 				last_name: "Doe",
@@ -64,7 +65,13 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 			fulfillment_status:
 				"not_fulfilled",
 			payment_status: "awaiting",
-			items: [],
+			items: [
+				{
+					id: "item_1",
+					title: "Test Item",
+					quantity: 1,
+				},
+			],
 			region: { id: "region_1" } as any,
 			currency_code: "eur",
 			tax_rate: 0,
