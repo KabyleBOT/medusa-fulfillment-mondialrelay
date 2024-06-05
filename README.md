@@ -89,12 +89,13 @@ This plugin requires the Medusa.js Stock Location module. [Please refer to the S
 - The plugin returns :
 
 ```json
-shipment_number: string;
-		shipment_label: string;
-		shippement_raw_content: Record<
-			string,
-			unknown
-		>;
+{
+	"shipment_number": "96824834",
+	"shipment_label": "https://connect-sandbox.mondialrelay.com//BDTEST/etiquette/GetStickersExpeditionsAnonyme2?ens=BDTEST&expedition=96824834&lg=fr-FR&format=10x15&crc=4C56D4342BDF1F85CA6DAB0409C04666",
+	"shippement_raw_content": {
+		"string": "unknown"
+	}
+}
 ```
 
 - The createFulfillment method returns data that will be stored in fulfillment.data.
