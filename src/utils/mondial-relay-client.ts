@@ -236,16 +236,30 @@ class MondialRelayClient {
 				xmlRequest
 			);
 
+		const responseShipmentsList =
+			response?.ShipmentCreationResponse
+				?.ShipmentsList;
+
+		if (!responseShipmentsList) {
+			throw new Error(
+				"Failed to create shipment"
+			);
+		}
+
 		const shipmentNumber =
-			response?.ShipmentsList?.[0]
+			response?.ShipmentCreationResponse
+				?.ShipmentsList?.[0]
 				?.Shipment?.[0]?.$
 				.ShipmentNumber;
+
 		const shipmentLabel =
-			response?.ShipmentsList?.[0]
+			response?.ShipmentCreationResponse
+				?.ShipmentsList?.[0]
 				?.Shipment?.[0]?.LabelList?.[0]
 				?.Label?.[0]?.Output?.[0];
 		const shipmentRawContent =
-			response?.ShipmentsList?.[0]
+			response?.ShipmentCreationResponse
+				?.ShipmentsList?.[0]
 				?.Shipment?.[0]?.LabelList?.[0]
 				?.Label?.[0]?.RawContent?.[0];
 
