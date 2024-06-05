@@ -125,18 +125,22 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		const { address: businessAddress } =
 			stockLocation;
 
-		const parcels = items.map(
-			(item) => ({
-				content: item.title,
+		const parcels = [
+			{
+				content: fulfillment.id,
 				weight: {
-					value:
-						item.quantity *
-						(item.variant.weight ??
-							500),
+					value: order.items.reduce(
+						(acc, item) =>
+							acc +
+							item.quantity *
+								(item.variant.weight ??
+									500),
+						0
+					),
 					unit: "gr",
 				},
-			})
-		);
+			},
+		];
 
 		const shipmentRequest = {
 			context: {
@@ -154,7 +158,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			},
 			shipmentsList: [
 				{
-					orderNo: order.id,
+					orderNo:
+						order.display_id.toString(),
 					customerNo: order.customer_id,
 					parcelCount: 1,
 					deliveryMode: {
@@ -279,7 +284,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			},
 			shipmentsList: [
 				{
-					orderNo: order.id,
+					orderNo:
+						order.display_id.toString(),
 					customerNo: order.customer_id,
 					parcelCount: 1,
 					deliveryMode: {

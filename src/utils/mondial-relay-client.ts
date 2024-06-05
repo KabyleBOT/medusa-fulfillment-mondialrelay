@@ -120,7 +120,7 @@ class MondialRelayClient {
 		);
 	}
 
-	private async generateXML(
+	private async speekToMondialRelay(
 		data: ShipmentCreationRequest
 	): Promise<{
 		shipment_number: string;
@@ -261,8 +261,12 @@ class MondialRelayClient {
 		data: ShipmentCreationRequest
 	): Promise<any> {
 		const result =
-			this.generateXML(data);
-
+			await this.speekToMondialRelay(
+				data
+			);
+		this.logger.info(
+			`Shipment created with number: ${result.shipment_number}`
+		);
 		return result;
 	}
 }
