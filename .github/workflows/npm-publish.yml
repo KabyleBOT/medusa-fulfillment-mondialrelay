@@ -1,0 +1,31 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main # Set the branch on which the action should run
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16" # Specify the Node.js version
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        run: yarn install # Since you are using Yarn
+
+      - name: Build
+        run: yarn build # Your build script
+
+      - name: Test
+        run: yarn test # Your test script, if any
+
+      - name: Publish to npm
+        run: yarn publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
