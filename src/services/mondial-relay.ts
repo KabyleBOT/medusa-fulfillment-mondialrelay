@@ -126,14 +126,17 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			{
 				content: fulfillment.id,
 				weight: {
-					value: order?.items?.reduce(
-						(acc, item) =>
-							acc +
-							item?.quantity *
-								(item?.variant
-									?.weight ?? 500),
-						0
-					),
+					value:
+						fulfillment?.items?.reduce(
+							(acc, item) =>
+								acc +
+								(item?.item
+									?.fulfilled_quantity ??
+									1) *
+									(item?.item?.variant
+										?.weight ?? 500),
+							0
+						),
 					unit: "gr",
 				},
 			},
@@ -156,9 +159,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			shipmentsList: [
 				{
 					orderNo:
-						order?.display_id?.toString(),
+						order?.display_id?.toString() ??
+						"",
 					customerNo:
-						order?.customer_id,
+						order?.customer_id ?? "",
 					parcelCount: 1,
 					deliveryMode: {
 						mode: "24R",
@@ -206,29 +210,30 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						title: "",
 						firstName:
 							order?.shipping_address
-								?.first_name,
+								?.first_name ?? "",
 						lastName:
 							order?.shipping_address
-								?.last_name,
+								?.last_name ?? "",
 						streetname:
 							order?.shipping_address
-								?.address_1,
+								?.address_1 ?? "",
 						addressAdd2:
 							order?.shipping_address
-								?.address_2,
+								?.address_2 ?? "",
 						countryCode:
 							order?.shipping_address
-								?.country_code,
+								?.country_code ?? "",
 						postCode:
 							order?.shipping_address
-								?.postal_code,
-						city: order
-							?.shipping_address.city,
+								?.postal_code ?? "",
+						city:
+							order?.shipping_address
+								.city ?? "",
 						addressAdd1: "",
 						mobileNo:
 							order?.shipping_address
-								?.phone,
-						email: order?.email,
+								?.phone ?? "",
+						email: order?.email ?? "",
 					},
 				},
 			],
@@ -275,7 +280,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						returnOrder?.items?.reduce(
 							(acc, item) =>
 								acc +
-								item?.quantity *
+								(item?.item
+									?.returned_quantity ??
+									1) *
 									(item?.item?.variant
 										?.weight ?? 500),
 							0
@@ -322,49 +329,58 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						title: "",
 						firstName:
 							order?.shipping_address
-								?.first_name,
+								?.first_name ?? "",
 						lastName:
 							order?.shipping_address
-								?.last_name,
+								?.last_name ?? "",
 						streetname:
 							order?.shipping_address
-								?.address_1,
+								?.address_1 ?? "",
 						addressAdd2:
 							order?.shipping_address
-								?.address_2,
+								?.address_2 ?? "",
 						countryCode:
 							order?.shipping_address
-								?.country_code,
+								?.country_code ?? "",
 						postCode:
 							order?.shipping_address
-								?.postal_code,
+								?.postal_code ?? "",
 						city: order
 							?.shipping_address.city,
 						addressAdd1: "",
 						mobileNo:
 							order?.shipping_address
-								?.phone,
-						email: order?.email,
+								?.phone ?? "",
+						email: order?.email ?? "",
 					},
 					recipient: {
 						title: "",
 						firstName: "",
 						lastName: "",
 						streetname:
-							businessAddress?.address_1,
+							businessAddress?.address_1 ??
+							"",
 						addressAdd2:
-							businessAddress?.address_2,
+							businessAddress?.address_2 ??
+							"",
 						countryCode:
-							businessAddress?.country_code,
+							businessAddress?.country_code ??
+							"",
 						postCode:
-							businessAddress?.postal_code,
-						city: businessAddress?.city,
+							businessAddress?.postal_code ??
+							"",
+						city:
+							businessAddress?.city ??
+							"",
 						addressAdd1:
-							businessAddress?.company,
+							businessAddress?.company ??
+							"",
 						mobileNo:
-							this.client.businessPhone,
+							this.client
+								.businessPhone ?? "",
 						email:
-							this.client.businessEmail,
+							this.client
+								.businessEmail ?? "",
 					},
 				},
 			],
