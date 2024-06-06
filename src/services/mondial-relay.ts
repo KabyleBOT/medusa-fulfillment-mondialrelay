@@ -126,17 +126,15 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			{
 				content: fulfillment.id,
 				weight: {
-					value:
-						fulfillment?.items?.reduce(
-							(acc, item) =>
-								acc +
-								(item?.item
-									?.fulfilled_quantity ??
-									1) *
-									(item?.item?.variant
-										?.weight ?? 500),
-							0
-						),
+					value: items?.reduce(
+						(acc, item) =>
+							acc +
+							(item?.fulfilled_quantity ??
+								1) *
+								(item?.variant
+									?.weight ?? 500),
+						0
+					),
 					unit: "gr",
 				},
 			},
