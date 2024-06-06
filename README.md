@@ -14,13 +14,16 @@
 
 ## Installation
 
-To install the plugin, add it to your project dependencies using Yarn:
+To install the plugin, add it to your project dependencies :
 
 ```bash
+
+#using Yarn
 yarn add medusa-fulfillment-mondialrelay
 
 # or using npm
 npm install medusa-fulfillment-mondialrelay
+
 ```
 
 ## Configuration
