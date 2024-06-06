@@ -116,7 +116,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		fulfillment: Fulfillment
 	): Promise<FulfillmentProviderData> {
 		const locationId =
-			fulfillment.location_id;
+			fulfillment?.location_id ?? "";
 		const { address: businessAddress } =
 			await this.retrieveStockLocation(
 				locationId
