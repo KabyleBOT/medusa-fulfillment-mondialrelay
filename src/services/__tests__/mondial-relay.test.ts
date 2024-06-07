@@ -6,11 +6,12 @@ import {
 	Order,
 	Fulfillment,
 	Logger,
+	ShippingMethod,
 } from "@medusajs/medusa";
 import dotenv from "dotenv";
 import { MondialRelayOptions } from "../../types";
 import { IStockLocationService } from "@medusajs/types";
-
+import { CreateFulfillmentOrder } from "@medusajs/medusa/dist/types/fulfillment";
 // Load environment variables from .env file
 dotenv.config();
 
@@ -45,7 +46,7 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 	});
 
 	it("should create a fulfillment", async () => {
-		const mockOrder: Order = {
+		const mockOrder = {
 			id: "order_123",
 			customer_id: "customer_123",
 			email: "john.doe@example.com",
@@ -72,7 +73,9 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 					quantity: 1,
 				},
 			],
-			region: { id: "region_1" } as any,
+			region: {
+				id: "region_1",
+			} as any,
 			currency_code: "eur",
 			tax_rate: 0,
 			discounts: [],
@@ -91,7 +94,7 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 			created_at: new Date(),
 			updated_at: new Date(),
 			metadata: {},
-		} as any as Order;
+		} as any as CreateFulfillmentOrder;
 
 		const mockItems: LineItem[] = [
 			{
@@ -132,7 +135,7 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 
 		const result =
 			await service.createFulfillment(
-				{},
+				{} as ShippingMethod,
 				mockItems,
 				mockOrder,
 				mockFulfillment
