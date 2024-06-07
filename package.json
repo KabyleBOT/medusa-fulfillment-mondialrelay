@@ -1,6 +1,6 @@
 {
 	"name": "medusa-fulfillment-mondialrelay",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"description": "A mondial relay integration for Medusajs",
 	"author": "khaled Belkouche <khaled.belkouche@assalas.com>",
 	"license": "MIT",

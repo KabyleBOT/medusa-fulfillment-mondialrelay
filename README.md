@@ -57,11 +57,9 @@ module.exports = {
 					process.env
 						.MONDIAL_RELAY_CUSTOMER_ID,
 				businessEmail:
-					process.env
-						.MONDIAL_RELAY_BUSINESS_EMAIL,
+					process.env.BUSINESS_EMAIL,
 				businessPhone:
-					process.env
-						.MONDIAL_RELAY_BUSINESS_PHONE,
+					process.env.BUSINESS_PHONE,
 			},
 		},
 	],
