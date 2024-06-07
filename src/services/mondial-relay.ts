@@ -5,8 +5,9 @@ import {
 	Logger,
 	MedusaContainer,
 	Order,
-	AbstractFulfillmentService,
 	OrderService,
+	ShippingMethod,
+	ShippingOption,
 } from "@medusajs/medusa";
 import { IStockLocationService } from "@medusajs/types";
 import { CreateReturnType } from "@medusajs/medusa/dist/types/fulfillment-provider";
@@ -18,8 +19,23 @@ import {
 	MondialRelayOptions,
 } from "../types";
 
+import { FulfillmentProviderService as MedusaFulfillmentProviderService } from "@medusajs/medusa";
+import { FulfillmentProviderRepository } from "@medusajs/medusa/dist/repositories/fulfillment-provider";
+import BaseFulfillmentService from "medusa-interfaces";
+import { CreateFulfillmentOrder } from "@medusajs/medusa/dist/types/fulfillment";
+
+type FulfillmentProviderKey =
+	`fp_${string}`;
+type FulfillmentProviderContainer =
+	MedusaContainer & {
+		fulfillmentProviderRepository: typeof FulfillmentProviderRepository;
+		manager: EntityManager;
+	} & {
+		[key in `${FulfillmentProviderKey}`]: typeof BaseFulfillmentService;
+	};
+
 export interface InjectedDependencies
-	extends MedusaContainer {
+	extends FulfillmentProviderContainer {
 	logger: Logger;
 	stockLocationService: IStockLocationService;
 	trackingLinkRepository: typeof TrackingLinkRepository;
@@ -27,7 +43,7 @@ export interface InjectedDependencies
 	manager: EntityManager;
 }
 
-class MondialRelayFulfillmentService extends AbstractFulfillmentService {
+class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 	static identifier = "mondialrelay";
 
 	private client: MondialRelayClient;
@@ -42,10 +58,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		container: InjectedDependencies,
 		options: MondialRelayOptions
 	) {
-		super(
-			container as any,
-			options as any
-		);
+		super(container);
 
 		this.config_ = options;
 		this.container_ = container;
@@ -78,15 +91,15 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async validateFulfillmentData(
-		optionData: Record<string, unknown>,
+		option: ShippingOption,
 		data: Record<string, unknown>,
-		cart: Cart
+		cart: Cart | Record<string, unknown>
 	): Promise<Record<string, unknown>> {
 		return data;
 	}
 
 	async validateOption(
-		data: Record<string, unknown>
+		option: ShippingOption
 	): Promise<boolean> {
 		return true;
 	}
@@ -98,11 +111,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async calculatePrice(
-		optionData: {
-			[x: string]: unknown;
-		},
-		data: { [x: string]: unknown },
-		cart: Cart
+		option: ShippingOption,
+		data: Record<string, unknown>,
+		cart?: Cart | Order
 	): Promise<number> {
 		throw new Error(
 			"Method not implemented."
@@ -110,9 +121,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async createFulfillment(
-		data: Record<string, unknown>,
+		method: ShippingMethod,
 		items: LineItem[],
-		order: Order,
+		order: CreateFulfillmentOrder,
 		fulfillment: Fulfillment
 	): Promise<FulfillmentProviderData> {
 		const locationId =
@@ -159,8 +170,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					orderNo:
 						order?.display_id?.toString() ??
 						"",
-					customerNo:
-						order?.customer_id ?? "",
+					customerNo: order?.id ?? "",
 					parcelCount: 1,
 					deliveryMode: {
 						mode: "24R",
@@ -394,9 +404,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async cancelFulfillment(
-		fulfillment: Record<string, unknown>
-	): Promise<any> {
-		return {};
+		fulfillment: Fulfillment
+	): Promise<Fulfillment> {
+		return {} as Fulfillment;
 	}
 
 	async getFulfillmentDocuments(
@@ -424,6 +434,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async retrieveDocuments(
+		providerId: string,
 		fulfillmentData: Record<
 			string,
 			unknown
