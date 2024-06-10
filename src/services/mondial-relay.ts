@@ -5,9 +5,8 @@ import {
 	Logger,
 	MedusaContainer,
 	Order,
+	AbstractFulfillmentService,
 	OrderService,
-	ShippingMethod,
-	ShippingOption,
 } from "@medusajs/medusa";
 import { IStockLocationService } from "@medusajs/types";
 import { CreateReturnType } from "@medusajs/medusa/dist/types/fulfillment-provider";
@@ -19,23 +18,8 @@ import {
 	MondialRelayOptions,
 } from "../types";
 
-import { FulfillmentProviderService as MedusaFulfillmentProviderService } from "@medusajs/medusa";
-import { FulfillmentProviderRepository } from "@medusajs/medusa/dist/repositories/fulfillment-provider";
-import BaseFulfillmentService from "medusa-interfaces";
-import { CreateFulfillmentOrder } from "@medusajs/medusa/dist/types/fulfillment";
-
-type FulfillmentProviderKey =
-	`fp_${string}`;
-type FulfillmentProviderContainer =
-	MedusaContainer & {
-		fulfillmentProviderRepository: typeof FulfillmentProviderRepository;
-		manager: EntityManager;
-	} & {
-		[key in `${FulfillmentProviderKey}`]: typeof BaseFulfillmentService;
-	};
-
 export interface InjectedDependencies
-	extends FulfillmentProviderContainer {
+	extends MedusaContainer {
 	logger: Logger;
 	stockLocationService: IStockLocationService;
 	trackingLinkRepository: typeof TrackingLinkRepository;
@@ -43,7 +27,7 @@ export interface InjectedDependencies
 	manager: EntityManager;
 }
 
-class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
+class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	static identifier = "mondialrelay";
 
 	private client: MondialRelayClient;
@@ -58,7 +42,10 @@ class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 		container: InjectedDependencies,
 		options: MondialRelayOptions
 	) {
-		super(container);
+		super(
+			container as any,
+			options as any
+		);
 
 		this.config_ = options;
 		this.container_ = container;
@@ -91,15 +78,15 @@ class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 	}
 
 	async validateFulfillmentData(
-		option: ShippingOption,
+		optionData: Record<string, unknown>,
 		data: Record<string, unknown>,
-		cart: Cart | Record<string, unknown>
+		cart: Cart
 	): Promise<Record<string, unknown>> {
 		return data;
 	}
 
 	async validateOption(
-		option: ShippingOption
+		data: Record<string, unknown>
 	): Promise<boolean> {
 		return true;
 	}
@@ -111,9 +98,11 @@ class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 	}
 
 	async calculatePrice(
-		option: ShippingOption,
-		data: Record<string, unknown>,
-		cart?: Cart | Order
+		optionData: {
+			[x: string]: unknown;
+		},
+		data: { [x: string]: unknown },
+		cart: Cart
 	): Promise<number> {
 		throw new Error(
 			"Method not implemented."
@@ -121,9 +110,9 @@ class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 	}
 
 	async createFulfillment(
-		method: ShippingMethod,
+		data: Record<string, unknown>,
 		items: LineItem[],
-		order: CreateFulfillmentOrder,
+		order: Order,
 		fulfillment: Fulfillment
 	): Promise<FulfillmentProviderData> {
 		const locationId =
@@ -170,7 +159,8 @@ class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 					orderNo:
 						order?.display_id?.toString() ??
 						"",
-					customerNo: order?.id ?? "",
+					customerNo:
+						order?.customer_id ?? "",
 					parcelCount: 1,
 					deliveryMode: {
 						mode: "24R",
@@ -404,9 +394,9 @@ class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 	}
 
 	async cancelFulfillment(
-		fulfillment: Fulfillment
-	): Promise<Fulfillment> {
-		return {} as Fulfillment;
+		fulfillment: Record<string, unknown>
+	): Promise<any> {
+		return {};
 	}
 
 	async getFulfillmentDocuments(
@@ -434,7 +424,6 @@ class MondialRelayFulfillmentService extends MedusaFulfillmentProviderService {
 	}
 
 	async retrieveDocuments(
-		providerId: string,
 		fulfillmentData: Record<
 			string,
 			unknown
