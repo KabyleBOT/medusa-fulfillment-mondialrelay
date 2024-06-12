@@ -197,11 +197,11 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 							businessAddress?.address_2 ??
 							"",
 						mobileNo:
-							this.client
-								.businessPhone ?? "",
+							this.config_
+								?.businessPhone ?? "",
 						email:
-							this.client
-								.businessEmail ?? "",
+							this.config_
+								?.businessEmail ?? "",
 					},
 					recipient: {
 						title: "",
@@ -347,8 +347,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						postCode:
 							order?.shipping_address
 								?.postal_code ?? "",
-						city: order
-							?.shipping_address.city,
+						city:
+							order?.shipping_address
+								?.city ?? "",
 						addressAdd1: "",
 						mobileNo:
 							order?.shipping_address
@@ -378,10 +379,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 							businessAddress?.company ??
 							"",
 						mobileNo:
-							this.client
-								.businessPhone ?? "",
+							this.config_
+								?.businessPhone ?? "",
 						email:
-							this.client
+							this.config_
 								.businessEmail ?? "",
 					},
 				},
