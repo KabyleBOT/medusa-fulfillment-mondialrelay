@@ -1,6 +1,6 @@
 {
 	"name": "medusa-fulfillment-mondialrelay",
-	"version": "0.1.2",
+	"version": "0.1.3",
 	"description": "A mondial relay integration for Medusajs",
 	"author": "khaled Belkouche <khaled.belkouche@assalas.com>",
 	"license": "MIT",
@@ -16,12 +16,13 @@
 		"dist"
 	],
 	"scripts": {
+		"check-types": "tsc --noEmit",
 		"prepublishOnly": "cross-env NODE_ENV=production tsc --build",
-		"test": "jest --passWithNoTests src",
 		"clean": "cross-env ./node_modules/.bin/rimraf dist",
 		"build:server": "cross-env npm run clean && tsc -p tsconfig.server.json",
-		"build": "cross-env npm run clean && npm run build:server",
 		"dev": "cross-env npm run build:server && medusa develop",
+		"test": "jest --passWithNoTests src",
+		"build": "rimraf dist && tsc -p ./tsconfig.server.json",
 		"watch": "tsc --watch"
 	},
 	"dependencies": {
