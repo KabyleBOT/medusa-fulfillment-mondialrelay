@@ -73,8 +73,8 @@ MONDIAL_RELAY_API_BASE_URL=https://api.mondialrelay.com
 MONDIAL_RELAY_LOGIN=your_login
 MONDIAL_RELAY_PASSWORD=your_password
 MONDIAL_RELAY_CUSTOMER_ID=your_customer_id
-MONDIAL_RELAY_BUSINESS_EMAIL=your_business_email
-MONDIAL_RELAY_BUSINESS_PHONE=your_business_phone
+BUSINESS_EMAIL=your_business_email
+BUSINESS_PHONE=your_business_phone
 
 ```
 
