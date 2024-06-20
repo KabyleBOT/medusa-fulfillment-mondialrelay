@@ -47,6 +47,9 @@ module.exports = {
 				apiBaseUrl:
 					process.env
 						.MONDIAL_RELAY_API_BASE_URL,
+				culture:
+					process.env
+						.MONDIAL_RELAY_CULTURE,
 				login:
 					process.env
 						.MONDIAL_RELAY_LOGIN,
@@ -70,6 +73,7 @@ Make sure to add the necessary environment variables to your .env file:
 
 ```bash
 MONDIAL_RELAY_API_BASE_URL=https://api.mondialrelay.com
+MONDIAL_RELAY_CULTURE=fr-FR
 MONDIAL_RELAY_LOGIN=your_login
 MONDIAL_RELAY_PASSWORD=your_password
 MONDIAL_RELAY_CUSTOMER_ID=your_customer_id

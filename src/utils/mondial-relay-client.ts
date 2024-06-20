@@ -13,7 +13,7 @@ class MondialRelayClient {
 	login: string;
 	password: string;
 	customerId: string;
-	culture: string = "fr-FR";
+	culture: string;
 	versionAPI: string = "1.0";
 	businessEmail: string;
 	businessPhone: string;
@@ -36,6 +36,8 @@ class MondialRelayClient {
 				options.password as string;
 			this.customerId =
 				options.customerId as string;
+			this.culture =
+				options.culture as string;
 			this.businessEmail =
 				options.businessEmail as string;
 			this.businessPhone =
@@ -45,6 +47,7 @@ class MondialRelayClient {
 
 			this.apiBaseUrl =
 				"https://connect-api-sandbox.mondialrelay.com/api/shipment";
+			this.culture = "fr-FR";
 			this.login =
 				"BDTEST@business-api.mondialrelay.com";
 			this.password = `'2crtPDo0ZL7Q*3kLumB`;
