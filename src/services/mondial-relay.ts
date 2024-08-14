@@ -267,12 +267,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			}
 		}
 
-		const providerId =
-			returnOrder?.location_id;
-
 		const { address: businessAddress } =
 			await this.retrieveStockLocation(
-				providerId
+				returnOrder?.location_id ?? ""
 			);
 
 		const parcels = [
