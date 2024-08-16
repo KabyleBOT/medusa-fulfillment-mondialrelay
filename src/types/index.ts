@@ -18,6 +18,7 @@ export interface Address {
 	addressAdd1: string;
 	mobileNo: string;
 	email: string;
+	returnLocation?: string;
 }
 
 export interface Parcel {
@@ -61,8 +62,7 @@ export interface MondialRelayOptions {
 	password: string;
 	customerId: string;
 	culture: string;
-	businessEmail: string;
-	businessPhone: string;
+	businessAddress: Address;
 }
 
 export interface FulfillmentProviderData {

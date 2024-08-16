@@ -59,10 +59,20 @@ module.exports = {
 				customerId:
 					process.env
 						.MONDIAL_RELAY_CUSTOMER_ID,
-				businessEmail:
-					process.env.BUSINESS_EMAIL,
-				businessPhone:
-					process.env.BUSINESS_PHONE,
+				businessAddress: {
+					title: "Mr", // or "Mme"
+					firstName: "John",
+					lastName: "Doe",
+					streetname: "Rue de la Paix",
+					addressAdd2: "Apt 123",
+					countryCode: "FR",
+					postCode: "75002",
+					city: "Paris",
+					addressAdd1: "1",
+					mobileNo: "0600000000",
+					email: "John.Doe@email.com",
+					returnLocation: "FR-12345",
+				},
 			},
 		},
 	],
@@ -77,18 +87,11 @@ MONDIAL_RELAY_CULTURE=fr-FR
 MONDIAL_RELAY_LOGIN=your_login
 MONDIAL_RELAY_PASSWORD=your_password
 MONDIAL_RELAY_CUSTOMER_ID=your_customer_id
-BUSINESS_EMAIL=your_business_email
-BUSINESS_PHONE=your_business_phone
 
 ```
 
-## Requirements
+- The plugin uses the business address for the sender address in outbound/inbound shipments.
 
-This plugin requires the Medusa.js Stock Location module. [Please refer to the Stock Location Module documentation for more details](https://docs.medusajs.com/modules/multiwarehouse/stock-location-module).
-
---
-
-- The address of the stock location is used as the business address.
 - The plugin uses the order shipping address for the customer address in outbound and return shipments.
 - The plugin uses address_2 as the pickup point reference, e.g., FR-12345 for both business and customer to indicate the pickup point to Mondial Relay as a workaround.
 - The plugin returns :

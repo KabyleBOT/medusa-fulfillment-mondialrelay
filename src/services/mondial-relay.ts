@@ -115,12 +115,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		order: Order,
 		fulfillment: Fulfillment
 	): Promise<FulfillmentProviderData> {
-		const locationId =
-			fulfillment?.location_id ?? "";
-		const { address: businessAddress } =
-			await this.retrieveStockLocation(
-				locationId
-			);
+		const businessAddress =
+			this.config_.businessAddress;
 
 		const parcels = [
 			{
@@ -175,33 +171,39 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					parcels: parcels,
 					deliveryInstruction: "",
 					sender: {
-						title: "",
-						firstName: "",
-						lastName: "",
+						title:
+							businessAddress?.title ??
+							"",
+						firstName:
+							businessAddress?.firstName ??
+							"",
+						lastName:
+							businessAddress?.lastName ??
+							"",
 						streetname:
-							businessAddress?.address_1 ??
+							businessAddress?.streetname ??
 							"",
 						countryCode:
-							businessAddress?.country_code ??
+							businessAddress?.countryCode ??
 							"",
 						postCode:
-							businessAddress?.postal_code ??
+							businessAddress?.postCode ??
 							"",
 						city:
 							businessAddress?.city ??
 							"",
 						addressAdd1:
-							businessAddress?.company ??
+							businessAddress?.addressAdd1 ??
 							"",
 						addressAdd2:
-							businessAddress?.address_2 ??
+							businessAddress?.addressAdd2 ??
 							"",
 						mobileNo:
-							this.config_
-								?.businessPhone ?? "",
+							businessAddress.mobileNo ??
+							"",
 						email:
-							this.config_
-								?.businessEmail ?? "",
+							businessAddress.email ??
+							"",
 					},
 					recipient: {
 						title: "",
@@ -267,10 +269,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			}
 		}
 
-		const { address: businessAddress } =
-			await this.retrieveStockLocation(
-				returnOrder?.location_id ?? ""
-			);
+		const businessAddress =
+			this.config_.businessAddress;
 
 		const parcels = [
 			{
@@ -316,7 +316,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					deliveryMode: {
 						mode: "24R",
 						location:
-							businessAddress?.address_2,
+							businessAddress?.returnLocation,
 					},
 					collectionMode: {
 						mode: "REL",
@@ -354,33 +354,39 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						email: order?.email ?? "",
 					},
 					recipient: {
-						title: "",
-						firstName: "",
-						lastName: "",
+						title:
+							businessAddress?.title ??
+							"",
+						firstName:
+							businessAddress?.firstName ??
+							"",
+						lastName:
+							businessAddress?.lastName ??
+							"",
 						streetname:
-							businessAddress?.address_1 ??
+							businessAddress?.streetname ??
 							"",
 						addressAdd2:
-							businessAddress?.address_2 ??
+							businessAddress?.addressAdd2 ??
 							"",
 						countryCode:
-							businessAddress?.country_code ??
+							businessAddress?.countryCode ??
 							"",
 						postCode:
-							businessAddress?.postal_code ??
+							businessAddress?.postCode ??
 							"",
 						city:
 							businessAddress?.city ??
 							"",
 						addressAdd1:
-							businessAddress?.company ??
+							businessAddress?.addressAdd1 ??
 							"",
 						mobileNo:
-							this.config_
-								?.businessPhone ?? "",
+							businessAddress.mobileNo ??
+							"",
 						email:
-							this.config_
-								.businessEmail ?? "",
+							businessAddress.email ??
+							"",
 					},
 				},
 			],

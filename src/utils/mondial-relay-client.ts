@@ -15,8 +15,7 @@ class MondialRelayClient {
 	customerId: string;
 	culture: string;
 	versionAPI: string = "1.0";
-	businessEmail: string;
-	businessPhone: string;
+	businessAddress: Address;
 	logger: Logger;
 
 	constructor(
@@ -38,10 +37,8 @@ class MondialRelayClient {
 				options.customerId as string;
 			this.culture =
 				options.culture as string;
-			this.businessEmail =
-				options.businessEmail as string;
-			this.businessPhone =
-				options.businessPhone as string;
+			this.businessAddress =
+				options.businessAddress as Address;
 		} else {
 			// Code to execute in non-production environment
 
@@ -52,9 +49,20 @@ class MondialRelayClient {
 				"BDTEST@business-api.mondialrelay.com";
 			this.password = `'2crtPDo0ZL7Q*3kLumB`;
 			this.customerId = "BDTEST";
-			this.businessEmail =
-				"test@business.com";
-			this.businessPhone = "0606060606";
+			this.businessAddress = {
+				title: "Mr",
+				firstName: "John",
+				lastName: "Doe",
+				streetname: "1 rue de la paix",
+				addressAdd2: "Bâtiment B",
+				countryCode: "FR",
+				postCode: "75000",
+				city: "Paris",
+				addressAdd1: "",
+				mobileNo: "0606060606",
+				email: "john.doe@email.com",
+				returnLocation: "FR-12345",
+			};
 		}
 		this.logger = logger;
 	}

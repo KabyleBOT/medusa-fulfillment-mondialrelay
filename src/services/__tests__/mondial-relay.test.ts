@@ -40,7 +40,24 @@ describe("MondialRelayFulfillmentService Integration Test", () => {
 							}) as any as IStockLocationService,
 					} as any as IStockLocationService,
 				} as InjectedDependencies,
-				{} as MondialRelayOptions
+				{
+					businessAddress: {
+						title: "Mr",
+						firstName: "John",
+						lastName: "Doe",
+						streetname:
+							"1 rue de la paix",
+						addressAdd2: "Bâtiment B",
+						countryCode: "FR",
+						postCode: "75000",
+						city: "Paris",
+						addressAdd1: "",
+						mobileNo: "0606060606",
+						email: "john.doe@email.com",
+						returnLocation: "FR-12345",
+					},
+					// Add other required options here if needed
+				} as MondialRelayOptions
 			);
 	});
 
