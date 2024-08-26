@@ -22,48 +22,18 @@ class MondialRelayClient {
 		options: MondialRelayOptions,
 		logger: Logger
 	) {
-		if (
-			process.env.NODE_ENV !== "test"
-		) {
-			// Code to execute in non test environment
-			this.apiBaseUrl =
-				options.apiBaseUrl as string;
-			this.login =
-				options.login as string;
-			this.password =
-				options.password as string;
-			this.customerId =
-				options.customerId as string;
-			this.culture =
-				options.culture as string;
-			this.businessAddress =
-				options.businessAddress as Address;
-		} else {
-			// Code to execute in non-production environment
-
-			this.apiBaseUrl =
-				"https://connect-api-sandbox.mondialrelay.com/api/shipment";
-			this.culture = "fr-FR";
-			this.login =
-				"BDTEST@business-api.mondialrelay.com";
-			this.password =
-				options.testPassword;
-			this.customerId = "BDTEST";
-			this.businessAddress = {
-				title: "Mr",
-				firstName: "John",
-				lastName: "Doe",
-				streetname: "1 rue de la paix",
-				addressAdd2: "Bâtiment B",
-				countryCode: "FR",
-				postCode: "75000",
-				city: "Paris",
-				addressAdd1: "",
-				mobileNo: "0606060606",
-				email: "john.doe@email.com",
-				returnLocation: "FR-12345",
-			};
-		}
+		this.apiBaseUrl =
+			options.apiBaseUrl as string;
+		this.login =
+			options.login as string;
+		this.password =
+			options.password as string;
+		this.customerId =
+			options.customerId as string;
+		this.culture =
+			options.culture as string;
+		this.businessAddress =
+			options.businessAddress as Address;
 		this.logger = logger;
 	}
 

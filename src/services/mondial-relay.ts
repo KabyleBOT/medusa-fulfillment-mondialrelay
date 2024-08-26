@@ -1,27 +1,25 @@
 import {
+	AbstractFulfillmentService,
 	Cart,
 	Fulfillment,
 	LineItem,
 	Logger,
 	MedusaContainer,
 	Order,
-	AbstractFulfillmentService,
 	OrderService,
 } from "@medusajs/medusa";
-import { IStockLocationService } from "@medusajs/types";
+import TrackingLinkRepository from "@medusajs/medusa/dist/repositories/tracking-link";
 import { CreateReturnType } from "@medusajs/medusa/dist/types/fulfillment-provider";
 import { EntityManager } from "typeorm";
-import TrackingLinkRepository from "@medusajs/medusa/dist/repositories/tracking-link";
-import MondialRelayClient from "../utils/mondial-relay-client";
 import {
 	FulfillmentProviderData,
 	MondialRelayOptions,
 } from "../types";
+import MondialRelayClient from "../utils/mondial-relay-client";
 
 export interface InjectedDependencies
 	extends MedusaContainer {
 	logger: Logger;
-	stockLocationService: IStockLocationService;
 	trackingLinkRepository: typeof TrackingLinkRepository;
 	orderService: OrderService;
 	manager: EntityManager;
@@ -34,7 +32,6 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	protected readonly config_: MondialRelayOptions;
 	protected readonly container_: InjectedDependencies;
 	protected readonly logger_: Logger;
-	protected readonly stockLocationService_: IStockLocationService;
 	protected readonly trackingLinkRepository_: typeof TrackingLinkRepository;
 	protected readonly orderService_: OrderService;
 
@@ -50,8 +47,6 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		this.config_ = options;
 		this.container_ = container;
 		this.logger_ = container.logger;
-		this.stockLocationService_ =
-			container.stockLocationService;
 		this.trackingLinkRepository_ =
 			container.trackingLinkRepository;
 		this.orderService_ =
@@ -437,34 +432,6 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		throw new Error(
 			"Method not implemented."
 		);
-	}
-
-	async retrieveStockLocation(
-		id: string
-	) {
-		if (
-			this.stockLocationService_ ===
-			undefined
-		) {
-			throw new Error(
-				"Stock location service not found, please make sure to install the stock-location module."
-			);
-		}
-		try {
-			const stockLocation =
-				await this.stockLocationService_.retrieve(
-					id,
-					{
-						relations: ["address"],
-					}
-				);
-
-			return stockLocation;
-		} catch (error) {
-			throw new Error(
-				`Stock location with id ${id} not found`
-			);
-		}
 	}
 }
 
