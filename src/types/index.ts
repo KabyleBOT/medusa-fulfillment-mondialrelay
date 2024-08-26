@@ -60,6 +60,7 @@ export interface MondialRelayOptions {
 	apiBaseUrl: string;
 	login: string;
 	password: string;
+	testPassword: string;
 	customerId: string;
 	culture: string;
 	businessAddress: Address;

@@ -23,10 +23,9 @@ class MondialRelayClient {
 		logger: Logger
 	) {
 		if (
-			process.env.NODE_ENV ===
-			"production"
+			process.env.NODE_ENV !== "test"
 		) {
-			// Code to execute in production environment
+			// Code to execute in non test environment
 			this.apiBaseUrl =
 				options.apiBaseUrl as string;
 			this.login =
@@ -47,7 +46,8 @@ class MondialRelayClient {
 			this.culture = "fr-FR";
 			this.login =
 				"BDTEST@business-api.mondialrelay.com";
-			this.password = `'2crtPDo0ZL7Q*3kLumB`;
+			this.password =
+				options.testPassword;
 			this.customerId = "BDTEST";
 			this.businessAddress = {
 				title: "Mr",
@@ -297,6 +297,9 @@ class MondialRelayClient {
 				await this.speekToMondialRelay(
 					data
 				);
+			this.logger.info(
+				`Mondial Relay Shipment created with label: ${result.shipment_label}`
+			);
 			this.logger.info(
 				`Mondial Relay Shipment created with number: ${result.shipment_number}`
 			);
