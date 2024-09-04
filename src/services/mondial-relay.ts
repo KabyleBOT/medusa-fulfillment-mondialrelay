@@ -14,6 +14,7 @@ import { EntityManager } from "typeorm";
 import {
 	FulfillmentProviderData,
 	MondialRelayOptions,
+	OutputOptions,
 } from "../types";
 import MondialRelayClient from "../utils/mondial-relay-client";
 
@@ -24,31 +25,6 @@ export interface InjectedDependencies
 	orderService: OrderService;
 	manager: EntityManager;
 }
-
-type MondialRelayOutput =
-	| {
-			outputType: "PdfUrl";
-			outputFormat:
-				| "A4"
-				| "A5"
-				| "10*15";
-	  }
-	| {
-			outputType: "QRCode";
-			outputFormat: undefined;
-	  }
-	| {
-			outputType: "ZplCode";
-			outputFormat: "Generic_ZPL_10x15_200dpi";
-	  }
-	| {
-			outputType: "IplCode";
-			outputFormat: "Generic_IPL_10x15_204dpi";
-	  }
-	| {
-			outputType: undefined;
-			outputFormat: undefined;
-	  };
 
 class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	static identifier = "mondialrelay";
@@ -131,7 +107,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 
 	async createFulfillment(
 		data: Record<string, unknown> &
-			MondialRelayOutput,
+			OutputOptions,
 		items: LineItem[],
 		order: Order,
 		fulfillment: Fulfillment
@@ -270,7 +246,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 
 	async createReturn(
 		returnOrder: CreateReturnType &
-			MondialRelayOutput
+			OutputOptions
 	): Promise<Record<string, unknown>> {
 		let order: Order =
 			returnOrder?.order;

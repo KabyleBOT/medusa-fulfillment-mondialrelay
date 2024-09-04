@@ -69,3 +69,28 @@ export interface MondialRelayOptions {
 export interface FulfillmentProviderData {
 	[key: string]: unknown;
 }
+
+export type OutputOptions =
+	| {
+			outputType: "PdfUrl";
+			outputFormat:
+				| "A4"
+				| "A5"
+				| "10*15";
+	  }
+	| {
+			outputType: "QRCode";
+			outputFormat: undefined;
+	  }
+	| {
+			outputType: "ZplCode";
+			outputFormat: "Generic_ZPL_10x15_200dpi";
+	  }
+	| {
+			outputType: "IplCode";
+			outputFormat: "Generic_IPL_10x15_204dpi";
+	  }
+	| {
+			outputType: undefined;
+			outputFormat: undefined;
+	  };
