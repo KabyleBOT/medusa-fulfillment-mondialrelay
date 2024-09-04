@@ -41,6 +41,7 @@ module.exports = {
 		// Other configurations...
 	},
 	plugins: [
+		// Other plugins...
 		{
 			resolve: `medusa-fulfillment-mondialrelay`,
 			options: {
@@ -108,6 +109,23 @@ MONDIAL_RELAY_CUSTOMER_ID=your_customer_id
 
 - The createFulfillment method returns data that will be stored in fulfillment.data.
 - The createReturn method returns data that will be stored in return.shipping_data.
+
+### New print in store feature
+
+- The plugin now supports the new print in store feature. The plugin will return the pickup point reference in the shipment data. The pickup point reference can be used to print the label in the store.
+
+- Use mondialrelay-print-in-store as fulfillment provider in the shipping option to enable the print in store feature.
+
+```json
+{
+	"shipment_number": "96824834",
+	"shipment_label": "ABCD ...", // Qr code value to be printed in store
+	"pickup_point_reference": "FR-12345",
+	"shippement_raw_content": {
+		"string": "unknown"
+	}
+}
+```
 
 ## License
 
