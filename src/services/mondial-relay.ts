@@ -1,14 +1,17 @@
 import {
-	AbstractFulfillmentService,
 	Cart,
 	Fulfillment,
+	FulfillmentProviderService,
 	LineItem,
 	Logger,
 	MedusaContainer,
 	Order,
 	OrderService,
+	ShippingMethod,
+	ShippingOption,
 } from "@medusajs/medusa";
-import TrackingLinkRepository from "@medusajs/medusa/dist/repositories/tracking-link";
+import { MedusaError } from "medusa-core-utils";
+import { CreateFulfillmentOrder } from "@medusajs/medusa/dist/types/fulfillment";
 import { CreateReturnType } from "@medusajs/medusa/dist/types/fulfillment-provider";
 import { EntityManager } from "typeorm";
 import {
@@ -18,38 +21,41 @@ import {
 } from "../types";
 import MondialRelayClient from "../utils/mondial-relay-client";
 
-export interface InjectedDependencies
-	extends MedusaContainer {
+// Define a type that extends MedusaContainer and includes any additional services
+export interface InitialInjectedDependencies
+	extends Partial<MedusaContainer> {
 	logger: Logger;
-	trackingLinkRepository: typeof TrackingLinkRepository;
-	orderService: OrderService;
 	manager: EntityManager;
+	orderService: OrderService;
 }
 
-class MondialRelayFulfillmentService extends AbstractFulfillmentService {
+// InjectedDependencies is now based on InitialInjectedDependencies and adds specific properties of FulfillmentProviderService["container_"]
+export type InjectedDependencies =
+	InitialInjectedDependencies & {
+		[key in keyof FulfillmentProviderService["container_"]]: FulfillmentProviderService["container_"][key];
+	};
+
+class MondialRelayFulfillmentService extends FulfillmentProviderService {
 	static identifier = "mondialrelay";
 
 	private client: MondialRelayClient;
 	protected readonly config_: MondialRelayOptions;
 	protected readonly container_: InjectedDependencies;
 	protected readonly logger_: Logger;
-	protected readonly trackingLinkRepository_: typeof TrackingLinkRepository;
 	protected readonly orderService_: OrderService;
 
 	constructor(
 		container: InjectedDependencies,
 		options: MondialRelayOptions
 	) {
-		super(
-			container as any,
-			options as any
-		);
+		super({
+			...container,
+			...options,
+		});
 
 		this.config_ = options;
 		this.container_ = container;
 		this.logger_ = container.logger;
-		this.trackingLinkRepository_ =
-			container.trackingLinkRepository;
 		this.orderService_ =
 			container.orderService;
 		this.client =
@@ -59,30 +65,20 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			);
 	}
 
-	async getFulfillmentOptions(): Promise<
-		any[]
-	> {
-		return [
-			{
-				id: "mondialrelay-fulfillment",
-			},
-			{
-				id: "mondialrelay-fulfillment-return",
-				is_return: true,
-			},
-		];
-	}
-
 	async validateFulfillmentData(
-		optionData: Record<string, unknown>,
+		option: ShippingOption,
 		data: Record<string, unknown>,
-		cart: Cart
+		cart: Cart | Record<string, unknown>
 	): Promise<Record<string, unknown>> {
-		return data;
+		return {
+			...data,
+			shipping_option: option,
+			cart,
+		};
 	}
 
 	async validateOption(
-		data: Record<string, unknown>
+		option: ShippingOption
 	): Promise<boolean> {
 		return true;
 	}
@@ -94,22 +90,20 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async calculatePrice(
-		optionData: {
-			[x: string]: unknown;
-		},
-		data: { [x: string]: unknown },
-		cart: Cart
+		option: ShippingOption,
+		data: Record<string, unknown>,
+		cart?: Order | Cart
 	): Promise<number> {
-		throw new Error(
+		throw new MedusaError(
+			MedusaError.Types.UNEXPECTED_STATE,
 			"Method not implemented."
 		);
 	}
 
 	async createFulfillment(
-		data: Record<string, unknown> &
-			OutputOptions,
+		method: ShippingMethod,
 		items: LineItem[],
-		order: Order,
+		fulfillmentOrder: CreateFulfillmentOrder,
 		fulfillment: Fulfillment
 	): Promise<FulfillmentProviderData> {
 		const businessAddress =
@@ -133,6 +127,14 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			},
 		];
 
+		const isPrintInStore =
+			method?.shipping_option?.metadata
+				?.print === "in_store";
+
+		const isHomeDelivry =
+			method?.shipping_option?.metadata
+				?.type === "home";
+
 		const shipmentRequest = {
 			context: {
 				login: this.client.login,
@@ -144,26 +146,31 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					this.client.versionAPI,
 			},
 			outputOptions: {
-				outputFormat: data?.outputType
-					? data?.outputFormat
+				outputFormat: isPrintInStore
+					? "QRCode"
 					: "A4",
-				outputType: data?.outputType
-					? data?.outputType
+				outputType: isPrintInStore
+					? undefined
 					: "PdfUrl",
 			},
 			shipmentsList: [
 				{
 					orderNo:
-						order?.display_id?.toString() ??
+						fulfillmentOrder?.display_id?.toString() ??
 						"",
 					customerNo:
-						order?.customer_id ?? "",
+						fulfillmentOrder?.order
+							?.customer_id ?? "",
 					parcelCount: 1,
 					deliveryMode: {
-						mode: "24R",
-						location:
-							order?.shipping_address
-								?.address_2,
+						mode: isHomeDelivry
+							? "HOM"
+							: "24R",
+						location: isHomeDelivry
+							? undefined
+							: fulfillmentOrder
+									?.shipping_address
+									?.address_2,
 					},
 					collectionMode: {
 						mode: "REL",
@@ -209,31 +216,41 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					recipient: {
 						title: "",
 						firstName:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								?.first_name ?? "",
 						lastName:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								?.last_name ?? "",
 						streetname:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								?.address_1 ?? "",
 						addressAdd2:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								?.address_2 ?? "",
 						countryCode:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								?.country_code ?? "",
 						postCode:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								?.postal_code ?? "",
 						city:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								.city ?? "",
 						addressAdd1: "",
 						mobileNo:
-							order?.shipping_address
+							fulfillmentOrder
+								?.shipping_address
 								?.phone ?? "",
-						email: order?.email ?? "",
+						email:
+							fulfillmentOrder?.email ??
+							"",
 					},
 				},
 			],
@@ -245,8 +262,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async createReturn(
-		returnOrder: CreateReturnType &
-			OutputOptions
+		returnOrder: CreateReturnType
 	): Promise<Record<string, unknown>> {
 		let order: Order =
 			returnOrder?.order;
@@ -294,6 +310,16 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			},
 		];
 
+		const isPrintInStore =
+			returnOrder?.shipping_method
+				?.shipping_option?.metadata
+				?.print === "in_store";
+
+		const isHomeDelivry =
+			returnOrder?.shipping_method
+				?.shipping_option?.metadata
+				?.type === "home";
+
 		const shipmentRequest = {
 			context: {
 				login: this.client.login,
@@ -305,14 +331,12 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					this.client.versionAPI,
 			},
 			outputOptions: {
-				outputFormat:
-					returnOrder?.outputType
-						? returnOrder?.outputFormat
-						: "A4",
-				outputType:
-					returnOrder?.outputType
-						? returnOrder?.outputType
-						: "PdfUrl",
+				outputFormat: isPrintInStore
+					? "QRCode"
+					: "A4",
+				outputType: isPrintInStore
+					? undefined
+					: "PdfUrl",
 			},
 			shipmentsList: [
 				{
@@ -322,13 +346,16 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						order?.customer_id,
 					parcelCount: 1,
 					deliveryMode: {
-						mode: "24R",
-						location:
-							businessAddress?.returnLocation,
+						mode: isHomeDelivry
+							? "HOM"
+							: "24R",
+						location: isHomeDelivry
+							? undefined
+							: businessAddress?.returnLocation,
 					},
 					collectionMode: {
 						mode: "REL",
-						location: "",
+						location: undefined,
 					},
 					parcels: parcels,
 					deliveryInstruction: "",
@@ -406,15 +433,19 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	}
 
 	async cancelFulfillment(
-		fulfillment: Record<string, unknown>
-	): Promise<any> {
-		return {};
+		fulfillment: Fulfillment
+	): Promise<Fulfillment> {
+		throw new MedusaError(
+			MedusaError.Types.UNEXPECTED_STATE,
+			"Method not implemented."
+		);
 	}
 
 	async getFulfillmentDocuments(
 		data: Record<string, unknown>
 	): Promise<any> {
-		throw new Error(
+		throw new MedusaError(
+			MedusaError.Types.UNEXPECTED_STATE,
 			"Method not implemented."
 		);
 	}
@@ -422,7 +453,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	async getReturnDocuments(
 		data: Record<string, unknown>
 	): Promise<any> {
-		throw new Error(
+		throw new MedusaError(
+			MedusaError.Types.UNEXPECTED_STATE,
 			"Method not implemented."
 		);
 	}
@@ -430,19 +462,22 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	async getShipmentDocuments(
 		data: Record<string, unknown>
 	): Promise<any> {
-		throw new Error(
+		throw new MedusaError(
+			MedusaError.Types.UNEXPECTED_STATE,
 			"Method not implemented."
 		);
 	}
 
 	async retrieveDocuments(
+		providerId: string,
 		fulfillmentData: Record<
 			string,
 			unknown
 		>,
 		documentType: "invoice" | "label"
 	): Promise<any> {
-		throw new Error(
+		throw new MedusaError(
+			MedusaError.Types.UNEXPECTED_STATE,
 			"Method not implemented."
 		);
 	}
