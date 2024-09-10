@@ -110,11 +110,21 @@ MONDIAL_RELAY_CUSTOMER_ID=your_customer_id
 - The createFulfillment method returns data that will be stored in fulfillment.data.
 - The createReturn method returns data that will be stored in return.shipping_data.
 
+### New Home Delivry feature
+
+- The plugin now supports the new home delivery feature. The plugin will return the shipment label in the shipment data. The shipment label can be used to print the label at home.
+
+-You need to add "type"="home" in the shipping option metadata created withing the mondialrelay provider.
+
+- If type don't equal to home the default delivry mode of pickup point will be used.
+
 ### New print in store feature
 
 - The plugin now supports the new print in store feature. The plugin will return the pickup point reference in the shipment data. The pickup point reference can be used to print the label in the store.
 
-- Use mondialrelay-print-in-store as fulfillment provider in the shipping option to enable the print in store feature.
+- You need to add "print"="in_store" in the shipping option metadata created withing the mondialrelay provider.
+
+- If print don't equal to in_store the default A4 PDF label will be returned.
 
 ```json
 {
