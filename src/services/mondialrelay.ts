@@ -17,7 +17,7 @@ import MondialRelayClient from "../utils/mondial-relay-client";
 
 // Define a type that extends MedusaContainer and includes any additional services
 export interface InjectedDependencies
-	extends Partial<MedusaContainer> {
+	extends MedusaContainer {
 	logger: Logger;
 	manager: EntityManager;
 	orderService: OrderService;
@@ -36,10 +36,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		container: InjectedDependencies,
 		options: MondialRelayOptions
 	) {
-		super({
-			...container,
-			...options,
-		});
+		super({ ...container });
 
 		this.config_ = options;
 		this.container_ = container;
