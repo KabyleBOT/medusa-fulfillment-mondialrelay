@@ -14,6 +14,7 @@ import { MedusaError } from "medusa-core-utils";
 import { EntityManager } from "typeorm";
 import { MondialRelayOptions } from "../types";
 import MondialRelayClient from "../utils/mondial-relay-client";
+import { PricedShippingOption } from "@medusajs/medusa/dist/types/pricing";
 
 // Define a type that extends MedusaContainer and includes any additional services
 export interface InjectedDependencies
@@ -56,14 +57,24 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	async validateFulfillmentData(
 		optionData: {
 			[x: string]: unknown;
-		},
-		data: { [x: string]: unknown },
+		} & PricedShippingOption,
+		data: {
+			[x: string]: unknown;
+		} & ShippingMethod,
 		cart: Cart
 	): Promise<Record<string, unknown>> {
 		return {
 			...data,
-			shipping_option: optionData,
-			cart,
+			shipping_option: {
+				...data?.shipping_option,
+				...optionData,
+			},
+			isHome:
+				optionData?.metadata?.type ===
+				"home",
+			isPrintInStore:
+				optionData?.metadata?.print ===
+				"in_store",
 		};
 	}
 

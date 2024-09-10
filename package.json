@@ -1,6 +1,6 @@
 {
 	"name": "medusa-fulfillment-mondialrelay",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "An unofficial Medusa plugin for Mondial Relay shipping",
 	"author": "khaled Belkouche <khaled.belkouche@assalas.com>",
 	"license": "MIT",
