@@ -36,7 +36,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		container: InjectedDependencies,
 		options: MondialRelayOptions
 	) {
-		super({ ...container });
+		super(
+			container as any,
+			options as any
+		);
 
 		this.config_ = options;
 		this.container_ = container;
@@ -463,10 +466,15 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	async getFulfillmentOptions(): Promise<
 		any[]
 	> {
-		throw new MedusaError(
-			MedusaError.Types.UNEXPECTED_STATE,
-			"Method not implemented."
-		);
+		return [
+			{
+				id: "mondialrelay-fulfillment",
+			},
+			{
+				id: "mondialrelay-fulfillment-return",
+				is_return: true,
+			},
+		];
 	}
 }
 
