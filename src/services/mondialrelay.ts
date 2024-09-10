@@ -12,7 +12,14 @@ import {
 import { CreateReturnType } from "@medusajs/medusa/dist/types/fulfillment-provider";
 import { MedusaError } from "medusa-core-utils";
 import { EntityManager } from "typeorm";
-import { MondialRelayOptions } from "../types";
+import {
+	CollectionMode,
+	CollectionModemodeEnum,
+	DeliveryMode,
+	DeliveryModemodeEnum,
+	MondialRelayOptions,
+	OutputOptions,
+} from "../types";
 import MondialRelayClient from "../utils/mondial-relay-client";
 import { PricedShippingOption } from "@medusajs/medusa/dist/types/pricing";
 
@@ -128,6 +135,36 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			method?.shipping_option?.metadata
 				?.type === "home";
 
+		const outputOptions: OutputOptions =
+			isPrintInStore
+				? {
+						outputType: "QRCode",
+						outputFormat: undefined,
+				  }
+				: {
+						outputFormat: "A4",
+						outputType: "PdfUrl",
+				  };
+
+		const deliveryMode: DeliveryMode =
+			isHomeDelivry
+				? {
+						mode: DeliveryModemodeEnum.HOM,
+						location: "",
+				  }
+				: {
+						mode: DeliveryModemodeEnum.PR,
+						location: order
+							?.shipping_address
+							?.address_2 as string,
+				  };
+
+		const collectionMode: CollectionMode =
+			{
+				mode: CollectionModemodeEnum.REL,
+				location: "",
+			};
+
 		const shipmentRequest = {
 			context: {
 				login: this.client.login,
@@ -138,14 +175,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 				versionAPI:
 					this.client.versionAPI,
 			},
-			outputOptions: {
-				outputFormat: isPrintInStore
-					? "QRCode"
-					: "A4",
-				outputType: isPrintInStore
-					? undefined
-					: "PdfUrl",
-			},
+			outputOptions,
 			shipmentsList: [
 				{
 					orderNo:
@@ -154,19 +184,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					customerNo:
 						order?.customer_id ?? "",
 					parcelCount: 1,
-					deliveryMode: {
-						mode: isHomeDelivry
-							? "HOM"
-							: "24R",
-						location: isHomeDelivry
-							? ""
-							: order?.shipping_address
-									?.address_2,
-					},
-					collectionMode: {
-						mode: "REL",
-						location: "",
-					},
+					deliveryMode,
+					collectionMode,
 					parcels: parcels,
 					deliveryInstruction: "",
 					sender: {
@@ -301,6 +320,35 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 				?.shipping_option?.metadata
 				?.type === "home";
 
+		const outputOptions: OutputOptions =
+			isPrintInStore
+				? {
+						outputType: "QRCode",
+						outputFormat: undefined,
+				  }
+				: {
+						outputFormat: "A4",
+						outputType: "PdfUrl",
+				  };
+
+		const deliveryMode: DeliveryMode =
+			isHomeDelivry
+				? {
+						mode: DeliveryModemodeEnum.HOM,
+						location: "",
+				  }
+				: {
+						mode: DeliveryModemodeEnum.PR,
+						location:
+							businessAddress?.returnLocation,
+				  };
+
+		const collectionMode: CollectionMode =
+			{
+				mode: CollectionModemodeEnum.REL,
+				location: "",
+			};
+
 		const shipmentRequest = {
 			context: {
 				login: this.client.login,
@@ -311,14 +359,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 				versionAPI:
 					this.client.versionAPI,
 			},
-			outputOptions: {
-				outputFormat: isPrintInStore
-					? "QRCode"
-					: "A4",
-				outputType: isPrintInStore
-					? undefined
-					: "PdfUrl",
-			},
+			outputOptions,
 			shipmentsList: [
 				{
 					orderNo:
@@ -326,18 +367,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					customerNo:
 						order?.customer_id,
 					parcelCount: 1,
-					deliveryMode: {
-						mode: isHomeDelivry
-							? "HOM"
-							: "24R",
-						location: isHomeDelivry
-							? ""
-							: businessAddress?.returnLocation,
-					},
-					collectionMode: {
-						mode: "REL",
-						location: undefined,
-					},
+					deliveryMode,
+					collectionMode,
 					parcels: parcels,
 					deliveryInstruction: "",
 					sender: {

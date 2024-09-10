@@ -33,14 +33,8 @@ export interface Shipment {
 	orderNo: string;
 	customerNo: string;
 	parcelCount: number;
-	deliveryMode: {
-		mode: string;
-		location: string;
-	};
-	collectionMode: {
-		mode: string;
-		location: string;
-	};
+	deliveryMode: DeliveryMode;
+	collectionMode: CollectionMode;
 	parcels: Parcel[];
 	deliveryInstruction: string;
 	sender: Address;
@@ -49,12 +43,55 @@ export interface Shipment {
 
 export interface ShipmentCreationRequest {
 	context: Context;
-	outputOptions: {
-		outputFormat: string;
-		outputType: string;
-	};
+	outputOptions: OutputOptions;
 	shipmentsList: Shipment[];
 }
+
+export enum DeliveryModemodeEnum {
+	HOM = "HOM", // Home delivery
+	HOC = "HOC", // Home delivery (specific for Spain)
+	LD1 = "LD1", // Home delivery for standard shipments
+	LDS = "LDS", // Home delivery for heavy or bulky shipments
+	LCC = "LCC", // Merchant delivery
+	DRI = "DRI", // Colisdrive® delivery
+	PR = "24R", // Point Relais® delivery
+	PRXL = "24L", // Point Relais® XL delivery
+	PRXXL = "24X", // Point Relais® XXL delivery
+	LOKER = "24C", // Locker delivery
+}
+
+export type DeliveryMode =
+	| {
+			mode:
+				| DeliveryModemodeEnum.PR
+				| DeliveryModemodeEnum.PRXL
+				| DeliveryModemodeEnum.PRXXL
+				| DeliveryModemodeEnum.LOKER;
+			location: string;
+	  }
+	| {
+			mode:
+				| DeliveryModemodeEnum.HOM
+				| DeliveryModemodeEnum.HOC
+				| DeliveryModemodeEnum.LD1
+				| DeliveryModemodeEnum.LDS
+				| DeliveryModemodeEnum.LCC
+				| DeliveryModemodeEnum.DRI;
+
+			location: "";
+	  };
+
+export enum CollectionModemodeEnum {
+	CCC = "CCC", // Merchant collection
+	CDR = "CDR", // Home collection for standard shipments
+	CDS = "CDS", // Home collection for heavy or bulky shipments
+	REL = "REL", // Point Relais® collection
+}
+
+export type CollectionMode = {
+	mode: CollectionModemodeEnum;
+	location: "";
+};
 
 export interface MondialRelayOptions {
 	apiBaseUrl: string;
