@@ -63,19 +63,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		} & ShippingMethod,
 		cart: Cart
 	): Promise<Record<string, unknown>> {
-		return {
-			...data,
-			shipping_option: {
-				...data?.shipping_option,
-				...optionData,
-			},
-			isHome:
-				optionData?.metadata?.type ===
-				"home",
-			isPrintInStore:
-				optionData?.metadata?.print ===
-				"in_store",
-		};
+		return data;
 	}
 
 	async validateOption(data: {
@@ -171,7 +159,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 							? "HOM"
 							: "24R",
 						location: isHomeDelivry
-							? undefined
+							? ""
 							: order?.shipping_address
 									?.address_2,
 					},
@@ -343,7 +331,7 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 							? "HOM"
 							: "24R",
 						location: isHomeDelivry
-							? undefined
+							? ""
 							: businessAddress?.returnLocation,
 					},
 					collectionMode: {
