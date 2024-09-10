@@ -61,43 +61,6 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			);
 	}
 
-	async validateFulfillmentData(
-		optionData: {
-			[x: string]: unknown;
-		} & PricedShippingOption,
-		data: {
-			[x: string]: unknown;
-		} & ShippingMethod,
-		cart: Cart
-	): Promise<Record<string, unknown>> {
-		return data;
-	}
-
-	async validateOption(data: {
-		[x: string]: unknown;
-	}): Promise<boolean> {
-		return true;
-	}
-
-	async canCalculate(
-		data: Record<string, unknown>
-	): Promise<boolean> {
-		return false;
-	}
-
-	async calculatePrice(
-		optionData: {
-			[x: string]: unknown;
-		},
-		data: { [x: string]: unknown },
-		cart: Cart
-	): Promise<number> {
-		throw new MedusaError(
-			MedusaError.Types.UNEXPECTED_STATE,
-			"Method not implemented."
-		);
-	}
-
 	async createFulfillment(
 		method: {
 			[x: string]: unknown;
@@ -108,6 +71,14 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	): Promise<{ [x: string]: unknown }> {
 		const businessAddress =
 			this.config_.businessAddress;
+
+		this.logger_.info(
+			`Creating shipment for order ${
+				order.id
+			} with business address ${JSON.stringify(
+				businessAddress
+			)}`
+		);
 
 		const parcels = [
 			{
@@ -284,6 +255,14 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		const businessAddress =
 			this.config_.businessAddress;
 
+		this.logger_.info(
+			`Creating return shipment for order ${
+				order.id
+			} with business address ${JSON.stringify(
+				businessAddress
+			)}`
+		);
+
 		const parcels = [
 			{
 				content: returnOrder?.id,
@@ -435,6 +414,43 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 
 		return await this.client.createShipment(
 			shipmentRequest
+		);
+	}
+
+	async validateFulfillmentData(
+		optionData: {
+			[x: string]: unknown;
+		} & PricedShippingOption,
+		data: {
+			[x: string]: unknown;
+		} & ShippingMethod,
+		cart: Cart
+	): Promise<Record<string, unknown>> {
+		return data;
+	}
+
+	async validateOption(data: {
+		[x: string]: unknown;
+	}): Promise<boolean> {
+		return true;
+	}
+
+	async canCalculate(
+		data: Record<string, unknown>
+	): Promise<boolean> {
+		return false;
+	}
+
+	async calculatePrice(
+		optionData: {
+			[x: string]: unknown;
+		},
+		data: { [x: string]: unknown },
+		cart: Cart
+	): Promise<number> {
+		throw new MedusaError(
+			MedusaError.Types.UNEXPECTED_STATE,
+			"Method not implemented."
 		);
 	}
 
