@@ -106,6 +106,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 			method?.shipping_option?.metadata
 				?.type === "home";
 
+		const isLocker =
+			order?.shipping_address?.metadata
+				?.isLocker === true;
+
 		const outputOptions: OutputOptions =
 			isPrintInStore
 				? {
@@ -124,7 +128,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						location: "",
 				  }
 				: {
-						mode: DeliveryModemodeEnum.PR,
+						mode: isLocker
+							? DeliveryModemodeEnum.LOCKER
+							: DeliveryModemodeEnum.PR,
 						location: order
 							?.shipping_address
 							?.address_2 as string,
@@ -311,6 +317,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						outputType: "PdfUrl",
 				  };
 
+		const isLocker =
+			order?.shipping_address?.metadata
+				?.isLocker === true;
+
 		const deliveryMode: DeliveryMode =
 			isHomeDelivry
 				? {
@@ -318,7 +328,9 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						location: "",
 				  }
 				: {
-						mode: DeliveryModemodeEnum.PR,
+						mode: isLocker
+							? DeliveryModemodeEnum.LOCKER
+							: DeliveryModemodeEnum.PR,
 						location:
 							businessAddress?.returnLocation,
 				  };

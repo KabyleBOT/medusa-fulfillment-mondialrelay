@@ -57,7 +57,7 @@ export enum DeliveryModemodeEnum {
 	PR = "24R", // Point Relais® delivery
 	PRXL = "24L", // Point Relais® XL delivery
 	PRXXL = "24X", // Point Relais® XXL delivery
-	LOKER = "24C", // Locker delivery
+	LOCKER = "24C", // Locker delivery
 }
 
 export type DeliveryMode =
@@ -66,7 +66,7 @@ export type DeliveryMode =
 				| DeliveryModemodeEnum.PR
 				| DeliveryModemodeEnum.PRXL
 				| DeliveryModemodeEnum.PRXXL
-				| DeliveryModemodeEnum.LOKER;
+				| DeliveryModemodeEnum.LOCKER;
 			location: string;
 	  }
 	| {
