@@ -181,8 +181,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					orderNo:
 						order?.display_id?.toString() ??
 						"",
-					customerNo:
-						order?.customer_id ?? "",
+					// medusa customer id is too long for mondial relay wich only accept 9 characters
+					customerNo: "",
 					parcelCount: 1,
 					deliveryMode,
 					collectionMode,
@@ -358,8 +358,8 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 				{
 					orderNo:
 						order?.display_id?.toString(),
-					customerNo:
-						order?.customer_id,
+					// medusa customer id is too long for mondial relay wich only accept 9 characters
+					customerNo: "",
 					parcelCount: 1,
 					deliveryMode,
 					collectionMode,
