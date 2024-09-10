@@ -235,21 +235,28 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 	async createReturn(
 		returnOrder: CreateReturnType
 	): Promise<Record<string, unknown>> {
-		let order: Order;
-		try {
-			order =
-				await this.orderService_.retrieve(
-					returnOrder?.order_id,
-					{
-						relations: [
-							"shipping_address",
-						],
-					}
+		let order: Order =
+			returnOrder?.order;
+
+		if (
+			!order &&
+			returnOrder?.order_id
+		) {
+			try {
+				order =
+					await this.orderService_.retrieve(
+						returnOrder?.order_id,
+						{
+							relations: [
+								"shipping_address",
+							],
+						}
+					);
+			} catch (error) {
+				throw new Error(
+					`Order with id ${returnOrder?.order_id} not found`
 				);
-		} catch (error) {
-			throw new Error(
-				`Order with id ${returnOrder?.order_id} not found`
-			);
+			}
 		}
 
 		const businessAddress =
