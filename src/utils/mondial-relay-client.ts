@@ -79,7 +79,10 @@ class MondialRelayClient {
 		const statusList =
 			result.ShipmentCreationResponse
 				.StatusList[0].Status;
-		statusList.forEach(
+
+		if (!statusList) return;
+
+		statusList?.forEach(
 			(status: any) => {
 				const code = status.$.Code;
 				const level = status.$.Level;
