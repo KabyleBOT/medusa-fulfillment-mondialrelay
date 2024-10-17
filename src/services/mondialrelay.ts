@@ -72,13 +72,13 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		const businessAddress =
 			this.config_.businessAddress;
 
-		// this.logger_.info(
-		// 	`Creating shipment for order ${
-		// 		order.id
-		// 	} with business address ${JSON.stringify(
-		// 		businessAddress
-		// 	)}`
-		// );
+		this.logger_.info(
+			`Creating shipment for ${
+				order.id
+			} with business address ${JSON.stringify(
+				businessAddress
+			)}`
+		);
 
 		const parcels = [
 			{
@@ -268,13 +268,13 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 		const businessAddress =
 			this.config_.businessAddress;
 
-		// this.logger_.info(
-		// 	`Creating return shipment for order ${
-		// 		order.id
-		// 	} with business address ${JSON.stringify(
-		// 		businessAddress
-		// 	)}`
-		// );
+		this.logger_.info(
+			`Creating return shipment for ${
+				order.id
+			} with business address ${JSON.stringify(
+				businessAddress
+			)}`
+		);
 
 		const parcels = [
 			{
