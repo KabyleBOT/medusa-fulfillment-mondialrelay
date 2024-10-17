@@ -169,11 +169,11 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						title:
 							businessAddress?.title ??
 							"",
-						firstName:
-							businessAddress?.firstName ??
+						firstname:
+							businessAddress?.firstname ??
 							"",
-						lastName:
-							businessAddress?.lastName ??
+						lastname:
+							businessAddress?.lastname ??
 							"",
 						streetname:
 							businessAddress?.streetname ??
@@ -202,10 +202,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					},
 					recipient: {
 						title: "",
-						firstName:
+						firstname:
 							order?.shipping_address
 								?.first_name ?? "",
-						lastName:
+						lastname:
 							order?.shipping_address
 								?.last_name ?? "",
 						streetname:
@@ -365,10 +365,10 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 					deliveryInstruction: "",
 					sender: {
 						title: "",
-						firstName:
+						firstname:
 							order?.shipping_address
 								?.first_name ?? "",
-						lastName:
+						lastname:
 							order?.shipping_address
 								?.last_name ?? "",
 						streetname:
@@ -396,11 +396,11 @@ class MondialRelayFulfillmentService extends AbstractFulfillmentService {
 						title:
 							businessAddress?.title ??
 							"",
-						firstName:
-							businessAddress?.firstName ??
+						firstname:
+							businessAddress?.firstname ??
 							"",
-						lastName:
-							businessAddress?.lastName ??
+						lastname:
+							businessAddress?.lastname ??
 							"",
 						streetname:
 							businessAddress?.streetname ??

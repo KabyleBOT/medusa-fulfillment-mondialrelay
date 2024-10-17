@@ -62,8 +62,8 @@ module.exports = {
 						.MONDIAL_RELAY_CUSTOMER_ID,
 				businessAddress: {
 					title: "Mr", // or "Mme"
-					firstName: "John",
-					lastName: "Doe",
+					firstname: "John",
+					lastname: "Doe",
 					streetname: "Rue de la Paix",
 					addressAdd2: "Apt 123",
 					countryCode: "FR",

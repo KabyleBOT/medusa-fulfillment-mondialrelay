@@ -135,12 +135,12 @@ class MondialRelayClient {
 		) => `
       <Address>
 	  <Title>${address?.title ?? ""}</Title>
-		<FirstName>${
-			address?.firstName ?? ""
-		}</FirstName>
-		<LastName>${
-			address?.lastName ?? ""
-		}</LastName>
+		<firstname>${
+			address?.firstname ?? ""
+		}</firstname>
+		<lastname>${
+			address?.lastname ?? ""
+		}</lastname>
         <Streetname>${
 					address.streetname
 				}</Streetname>
@@ -160,6 +160,10 @@ class MondialRelayClient {
 				}</MobileNo>
         <Email>${address.email}</Email>
       </Address>`;
+
+		this.logger.info(
+			"addressXML" + addressXML
+		);
 
 		const shipmentsXML = shipmentsList
 			.map(

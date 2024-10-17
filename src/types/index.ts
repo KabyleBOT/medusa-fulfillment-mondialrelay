@@ -8,8 +8,8 @@ export interface Context {
 
 export interface Address {
 	title: string;
-	firstName: string;
-	lastName: string;
+	firstname: string;
+	lastname: string;
 	streetname: string;
 	addressAdd2: string;
 	countryCode: string;
